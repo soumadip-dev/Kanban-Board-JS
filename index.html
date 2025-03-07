@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kanban Board</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="light-mode">
+  <nav>
+    <h1>Kanban Board</h1>
+    <div class="nav-buttons">
+      <button id="add-task">+ Task</button>
+      <button id="add-board">+ Board</button>
+      <button id="dark-mode-toggle">🌙</button>
+    </div>
+  </nav>
+
+  <main id="board-container">
+    <section class="board">
+      <h2>To Do</h2>
+      <div id="todo" class="task-list"></div>
+    </section>
+    <section class="board">
+      <h2>Doing</h2>
+      <div id="doing" class="task-list"></div>
+    </section>
+    <section class="board">
+      <h2>Done</h2>
+      <div id="done" class="task-list"></div>
+    </section>
+  </main>
+
+  <div id="modal" class="hidden">
+    <div id="modal-content">
+      <span class="close">&times;</span>
+      <h2>Add Task</h2>
+      <input type="text" placeholder="Enter task" id="task-input">
+      <label for="board-select">Board:</label>
+      <select id="board-select">
+        <option value="todo">To Do</option>
+        <option value="doing">Doing</option>
+        <option value="done">Done</option>
+      </select>
+      <button id="confirm-add-task">Add</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+
+</html>
