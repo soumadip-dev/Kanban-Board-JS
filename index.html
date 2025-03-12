@@ -12,8 +12,6 @@
   <nav>
     <h1>Kanban Board</h1>
     <div class="nav-buttons">
-      <button id="add-task">+ Task</button>
-      <button id="add-board">+ Board</button>
       <button id="dark-mode-toggle">🌙</button>
     </div>
   </nav>
@@ -22,33 +20,25 @@
     <section class="board">
       <h2>To Do</h2>
       <div id="todo" class="task-list"></div>
+      <input type="text" class="task-input" id="todo-input" placeholder="Enter a new task">
+      <button class="add-task-btn" onclick="addTask('todo')">+ Add Task</button>
     </section>
     <section class="board">
       <h2>Doing</h2>
       <div id="doing" class="task-list"></div>
+      <input type="text" class="task-input" id="doing-input" placeholder="Enter a new task">
+      <button class="add-task-btn" onclick="addTask('doing')">+ Add Task</button>
     </section>
     <section class="board">
       <h2>Done</h2>
       <div id="done" class="task-list"></div>
+      <input type="text" class="task-input" id="done-input" placeholder="Enter a new task">
+      <button class="add-task-btn" onclick="addTask('done')">+ Add Task</button>
     </section>
   </main>
-
-  <div id="modal" class="hidden">
-    <div id="modal-content">
-      <span class="close">&times;</span>
-      <h2>Add Task</h2>
-      <input type="text" placeholder="Enter task" id="task-input">
-      <label for="board-select">Board:</label>
-      <select id="board-select">
-        <option value="todo">To Do</option>
-        <option value="doing">Doing</option>
-        <option value="done">Done</option>
-      </select>
-      <button id="confirm-add-task">Add</button>
-    </div>
-  </div>
 
   <script src="script.js"></script>
 </body>
 
 </html>
+
