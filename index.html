@@ -13,18 +13,25 @@
   <nav>
     <h1>Kanban Board</h1>
     <div class="nav-buttons">
+      <button id="add-board-btn">Add New Board</button>
       <button id="dark-mode-toggle">🌙</button>
     </div>
   </nav>
 
   <main id="board-container">
     <section class="board">
-      <h2>To Do</h2>
+      <div class="board-header">
+        <h2>To Do</h2>
+        <div class="board-actions">
+          <i class="fas fa-edit edit-board-icon"></i>
+          <i class="fas fa-trash delete-board-icon"></i>
+        </div>
+      </div>
       <div id="todo" class="task-list">
         <div class="task" draggable="true">
           <div class="task-content">
             <span class="task-text">Sample Task</span>
-            <span class="task-date">2023-10-01 12:00 PM</span> <!-- Dummy date placeholder -->
+            <span class="task-date">2023-10-01 12:00 PM</span>
           </div>
           <div class="task-actions">
             <i class="fas fa-edit edit-icon"></i>
@@ -36,13 +43,25 @@
       <button class="add-task-btn" onclick="addNewTask('todo')">+ Add Task</button>
     </section>
     <section class="board">
-      <h2>Doing</h2>
+      <div class="board-header">
+        <h2>Doing</h2>
+        <div class="board-actions">
+          <i class="fas fa-edit edit-board-icon"></i>
+          <i class="fas fa-trash delete-board-icon"></i>
+        </div>
+      </div>
       <div id="doing" class="task-list"></div>
       <input type="text" class="task-input" id="doing-input" placeholder="Enter a new task">
       <button class="add-task-btn" onclick="addNewTask('doing')">+ Add Task</button>
     </section>
     <section class="board">
-      <h2>Done</h2>
+      <div class="board-header">
+        <h2>Done</h2>
+        <div class="board-actions">
+          <i class="fas fa-edit edit-board-icon"></i>
+          <i class="fas fa-trash delete-board-icon"></i>
+        </div>
+      </div>
       <div id="done" class="task-list"></div>
       <input type="text" class="task-input" id="done-input" placeholder="Enter a new task">
       <button class="add-task-btn" onclick="addNewTask('done')">+ Add Task</button>
