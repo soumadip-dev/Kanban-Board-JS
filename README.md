@@ -21,7 +21,7 @@
 Here’s a preview of the Kanban Board project:
 
 <div align="center">
-  <img alt="Kanban Board SS" src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExMDcwdWNlOGNub29jdmphNnVsY21tMnpucHNjZGptYWV3bWRjbms4eCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/VHOF8pfPZOt9p018zw/giphy.gif" 
+  <img alt="Kanban Board SS" src="https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExNmEzZHM0djFybDJlcTkwOGtjZTc2NDZsYTVlMTZ0cXJ1a3Qxems2NiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/ek2O7qoqZxR2H6tHN5/giphy.gif" 
   width="100%" height="400" style="border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
 </div>
 
