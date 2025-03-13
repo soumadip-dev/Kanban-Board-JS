@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kanban Board</title>
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 
 <body class="light-mode">
@@ -19,21 +20,32 @@
   <main id="board-container">
     <section class="board">
       <h2>To Do</h2>
-      <div id="todo" class="task-list"></div>
+      <div id="todo" class="task-list">
+        <div class="task" draggable="true">
+          <div class="task-content">
+            <span class="task-text">Sample Task</span>
+            <span class="task-date">2023-10-01 12:00 PM</span> <!-- Dummy date placeholder -->
+          </div>
+          <div class="task-actions">
+            <i class="fas fa-edit edit-icon"></i>
+            <i class="fas fa-trash delete-icon"></i>
+          </div>
+        </div>
+      </div>
       <input type="text" class="task-input" id="todo-input" placeholder="Enter a new task">
-      <button class="add-task-btn" onclick="addTask('todo')">+ Add Task</button>
+      <button class="add-task-btn" onclick="addNewTask('todo')">+ Add Task</button>
     </section>
     <section class="board">
       <h2>Doing</h2>
       <div id="doing" class="task-list"></div>
       <input type="text" class="task-input" id="doing-input" placeholder="Enter a new task">
-      <button class="add-task-btn" onclick="addTask('doing')">+ Add Task</button>
+      <button class="add-task-btn" onclick="addNewTask('doing')">+ Add Task</button>
     </section>
     <section class="board">
       <h2>Done</h2>
       <div id="done" class="task-list"></div>
       <input type="text" class="task-input" id="done-input" placeholder="Enter a new task">
-      <button class="add-task-btn" onclick="addTask('done')">+ Add Task</button>
+      <button class="add-task-btn" onclick="addNewTask('done')">+ Add Task</button>
     </section>
   </main>
 
@@ -41,4 +53,3 @@
 </body>
 
 </html>
-
