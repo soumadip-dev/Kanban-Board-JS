@@ -14,14 +14,14 @@
     <h1>Kanban Board</h1>
     <div class="nav-buttons">
       <button id="add-board-btn">Add New Board</button>
-      <button id="dark-mode-toggle">🌙</button>
+      <button id="dark-mode-toggle"><i class="fas fa-moon"></i></button>
     </div>
   </nav>
 
   <main id="board-container">
     <section class="board">
       <div class="board-header">
-        <h2>To Do</h2>
+        <h2>To Do <span class="task-count">3</span></h2>
         <div class="board-actions">
           <i class="fas fa-edit edit-board-icon"></i>
           <i class="fas fa-trash delete-board-icon"></i>
@@ -31,7 +31,7 @@
         <div class="task" draggable="true">
           <div class="task-content">
             <span class="task-text">Sample Task</span>
-            <span class="task-date">2023-10-01 12:00 PM</span>
+            <span class="task-date">2023-10-01 12:00</span>
           </div>
           <div class="task-actions">
             <i class="fas fa-edit edit-icon"></i>
@@ -44,7 +44,7 @@
     </section>
     <section class="board">
       <div class="board-header">
-        <h2>Doing</h2>
+        <h2>Doing <span class="task-count">2</span></h2>
         <div class="board-actions">
           <i class="fas fa-edit edit-board-icon"></i>
           <i class="fas fa-trash delete-board-icon"></i>
@@ -56,7 +56,7 @@
     </section>
     <section class="board">
       <div class="board-header">
-        <h2>Done</h2>
+        <h2>Done <span class="task-count">5</span></h2>
         <div class="board-actions">
           <i class="fas fa-edit edit-board-icon"></i>
           <i class="fas fa-trash delete-board-icon"></i>

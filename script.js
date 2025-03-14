@@ -4,8 +4,20 @@ const taskItems = document.querySelectorAll('.task');
 const mainContainer = document.getElementById('board-container');
 const addBoardBtn = document.getElementById('add-board-btn');
 const allBoards = document.querySelectorAll('.board');
+const themeToggle = document.getElementById('dark-mode-toggle');
+const body = document.body;
 
 ////// Functions
+
+// Change theme
+function changeTheme() {
+  body.classList.toggle('dark-mode');
+  if(body.classList.contains('dark-mode')){
+    themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+  }else{
+    themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+  }
+}
 
 // Add new boards
 function AddNewBoard() {
@@ -189,6 +201,15 @@ function enableDropEvents(taskBoard) {
 }
 
 ////// Event Literatures
+
+// Change theme
+const currentTheme = window.matchMedia("(prefers-color-scheme: dark)").matches?'dark':'light';
+if(currentTheme === 'dark'){
+  body.classList.add('dark-mode');
+  themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+}
+themeToggle.addEventListener('click', changeTheme);
+
 taskItems.forEach(enableDragEvents);
 Array.from(taskBoards).forEach(enableDropEvents);
 
