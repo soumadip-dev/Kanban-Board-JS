@@ -29,7 +29,7 @@ nav {
   padding: 15px 30px;
   border-radius: 12px;
   box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
-  margin-bottom: 30px;
+  margin-bottom: 10px;
   color: white;
 }
 
@@ -77,7 +77,7 @@ nav h1 {
   display: flex;
   justify-content: flex-start;
   gap: 25px;
-  margin-top: 20px;
+  /* margin-top: 10px; */
   flex-wrap: wrap;
   width: 100%;
   max-width: 1900px;
@@ -92,7 +92,7 @@ nav h1 {
   box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
-  min-height: 750px;
+  min-height: 810px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -101,8 +101,27 @@ nav h1 {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
+  gap: 10px;
 }
 
+.board-header h2 {
+  font-size: 22px;
+  font-weight: 600;
+  color: #007bff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+}
+.color-dot {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  margin-right: 8px;
+  vertical-align: middle;
+  border: 1px dashed black;
+}
 .board-actions {
   display: flex;
   gap: 12px;
@@ -160,7 +179,7 @@ h2 {
 }
 
 .task {
-  background: linear-gradient(135deg, #007bff, #0056b3);
+  background: linear-gradient(135deg, #000000, #0056b3);
   color: white;
   padding: 16px 20px;
   margin: 12px 0;
@@ -171,7 +190,9 @@ h2 {
   justify-content: space-between;
   align-items: center;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+  border-left: 6px solid #ff5722;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease,
+    border-color 0.3s ease-in-out;
 }
 
 .task:hover {
@@ -183,11 +204,11 @@ h2 {
 
 .task.dragging {
   transform: perspective(1000px) rotateX(5deg) rotateY(5deg) translateZ(20px)
-  scale(1.05);
+    scale(1.05);
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2), 0 6px 6px rgba(0, 0, 0, 0.2);
   opacity: 0.95;
   transition: transform 0.2s ease-out, box-shadow 0.2s ease-out,
-  opacity 0.2s ease-out;
+    opacity 0.2s ease-out;
   z-index: 1000;
   cursor: grabbing;
   filter: brightness(1.1);
@@ -270,6 +291,79 @@ h2 {
   transform: scale(1.02);
 }
 
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.5); /* Black with opacity */
+}
+
+.modal-container {
+  background-color: #fff;
+  margin: 10% auto;
+  padding: 20px;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  position: relative;
+}
+
+.close {
+  position: absolute;
+  right: 15px;
+  top: 10px;
+  font-size: 24px;
+  font-weight: bold;
+  color: #888;
+  cursor: pointer;
+}
+
+.close:hover {
+  color: #000;
+}
+
+.modal h2 {
+  margin-bottom: 20px;
+  font-size: 24px;
+  color: #333;
+}
+
+input[type='text'],
+input[type='color'] {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+input[type='color'] {
+  height: 40px;
+  padding: 5px;
+}
+
+.modal button {
+  width: 100%;
+  padding: 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.modal button:hover {
+  background-color: #0056b3;
+}
+
 /* Dark Mode */
 body.dark-mode {
   background: #121212;
@@ -339,7 +433,9 @@ body.dark-mode .task-list.drag-over {
 body.dark-mode ::-webkit-scrollbar-thumb {
   background: #555;
 }
-
+body.dark-mode .color-dot {
+  border: 1px dashed white;
+}
 /* Scrollbars */
 ::-webkit-scrollbar {
   width: 8px;
@@ -352,4 +448,19 @@ body.dark-mode ::-webkit-scrollbar-thumb {
 ::-webkit-scrollbar-thumb {
   background: #888;
   border-radius: 4px;
+}
+
+body.dark-mode .modal-container {
+  background-color: #141414;
+}
+body.dark-mode .close {
+  color: #888;
+}
+
+body.dark-mode .close:hover {
+  color: #ffffff;
+}
+
+body.dark-mode .modal h2 {
+  color: #0056b3;
 }
