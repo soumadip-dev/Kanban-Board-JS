@@ -8,6 +8,80 @@ const allBoards = document.querySelectorAll('.board');
 const themeToggle = document.getElementById('dark-mode-toggle');
 const body = document.body; // Get the body element
 
+//////////// Local Storage
+
+// Save state to localStorage
+function saveStateToLocalStorage() {
+  const theme = body.classList.contains('dark-mode') ? 'dark' : 'light';
+
+  // Extract boards and their tasks
+  const boards = Array.from(document.querySelectorAll('.board')).map(board => {
+    const taskList = board.querySelector('.task-list'); // Corrected from '.task'
+    const id = taskList.id;
+    const nameElement = board.querySelector('h2'); // Added quotes around h2
+    const countElement = nameElement.querySelector('.task-count');
+
+    const countText = countElement ? countElement.textContent : ''; // Fixed logical error
+    const name = nameElement.textContent.replace(countText, '').trim();
+    const color = board.getAttribute('data-color');
+    const tasks = Array.from(taskList.querySelectorAll('.task')).map(task => {
+      const text = task.querySelector('.task-text').textContent;
+      const date = task.querySelector('.task-date').textContent;
+      return { text, date };
+    });
+    return { id, name, color, tasks };
+  });
+
+  // Save the state to local storage
+  localStorage.setItem('kanbanData', JSON.stringify({ theme, boards })); // Fixed key name
+}
+
+// Load from local storage
+function loadStateFromLocalStorage() {
+  const saveData = localStorage.getItem('kanbanData'); // Correct key name
+  if (!saveData) return;
+
+  const { theme, boards } = JSON.parse(saveData);
+
+  mainContainer.innerHTML = '';
+
+  boards.forEach(({ id, name, color, tasks }) => {
+    const boardElement = document.createElement('section');
+    boardElement.classList.add('board');
+    boardElement.setAttribute('data-color', color); // Fixed variable name
+    createBoardHtml(boardElement, name, color, id);
+    mainContainer.appendChild(boardElement);
+
+    // Add loaded tasks to the board
+    const taskList = boardElement.querySelector('.task-list');
+    tasks.forEach(({ text, date }) => {
+      const taskElement = createTaskElement(text, date);
+      taskList.appendChild(taskElement);
+      taskElement.style.borderLeft = `6px solid ${color}`;
+      enableDragEvents(taskElement);
+    });
+
+    // Add event listeners for board actions
+    const editIcon = boardElement.querySelector('.edit-board-icon');
+    const deleteIcon = boardElement.querySelector('.delete-board-icon');
+    editIcon.addEventListener('click', () => editBoard(boardElement));
+    deleteIcon.addEventListener('click', () => deleteBoard(boardElement));
+
+    // Enable drop events for the task list
+    enableDropEvents(taskList);
+
+    // Update task count
+    updateTasksCount(id);
+  });
+
+  // Apply saved Theme
+  body.classList.toggle('dark-mode', theme === 'dark'); // Fixed typo in `body`
+  themeToggle.innerHTML =
+    theme === 'dark'
+      ? '<i class="fas fa-sun"></i>'
+      : '<i class="fas fa-moon"></i>';
+}
+
 //////////// Functions
 
 // Change theme between dark and light mode
@@ -18,6 +92,7 @@ function changeTheme() {
   } else {
     themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
   }
+  saveStateToLocalStorage();
 }
 
 // Open modal
@@ -61,6 +136,21 @@ function addNewBoard(boardHeading, boardColour) {
   }
 
   let boardId = trimmedHeading.replace(/\s/g, '').toLowerCase();
+  createBoardHtml(board, boardHeading, boardColour, boardId);
+  mainContainer.appendChild(board);
+  const editIcon = board.querySelector('.edit-board-icon');
+  const deleteIcon = board.querySelector('.delete-board-icon');
+
+  editIcon.addEventListener('click', () => editBoard(board));
+  deleteIcon.addEventListener('click', () => deleteBoard(board));
+
+  enableDropEvents(document.getElementById(boardId));
+
+  saveStateToLocalStorage();
+}
+
+// Create innerHTml of board
+function createBoardHtml(board, boardHeading, boardColour, boardId) {
   board.innerHTML = `
     <div class="board-header">
       <h2>
@@ -75,20 +165,13 @@ function addNewBoard(boardHeading, boardColour) {
     <input type="text" class="task-input" id="${boardId}-input" placeholder="Enter a new task">
     <button class="add-task-btn" onclick="addNewTask('${boardId}')">+ Add Task</button>
   `;
-  mainContainer.appendChild(board);
-
-  const editIcon = board.querySelector('.edit-board-icon');
-  const deleteIcon = board.querySelector('.delete-board-icon');
-
-  editIcon.addEventListener('click', () => editBoard(board));
-  deleteIcon.addEventListener('click', () => deleteBoard(board));
-
-  enableDropEvents(document.getElementById(boardId));
 }
 
 // Edit the heading of a board
 function editBoard(boardElement) {
   const boardHeading = boardElement.querySelector('h2');
+  const colorDot = boardHeading.querySelector('.color-dot');
+  const taskCount = boardHeading.querySelector('.task-count');
   let newHeading = prompt('Edit board heading:'); // Prompt user for new heading
   if (newHeading === null) return;
   let trimmedHeading = newHeading.trim();
@@ -96,13 +179,19 @@ function editBoard(boardElement) {
     alert('Give a valid board heading');
     return;
   }
-  boardHeading.textContent = trimmedHeading;
+  boardHeading.innerHTML = `
+   ${colorDot.outerHTML} <!-- Preserve the color dot -->
+    ${trimmedHeading} <!-- Update the name -->
+    ${taskCount.outerHTML} <!-- Preserve the task count -->
+  `;
+  saveStateToLocalStorage();
 }
 
 // Delete a board
 function deleteBoard(boardElement) {
   if (confirm('Are you sure you want to delete this board?')) {
     boardElement.remove();
+    saveStateToLocalStorage();
   }
 }
 
@@ -116,7 +205,7 @@ function addNewTask(boardId) {
   document.getElementById(boardId).appendChild(newTaskElement);
 
   const boardSection = newTaskElement.closest('.board');
-  const boardColor = boardSection.getAttribute('data-color'); // Fix here
+  const boardColor = boardSection.getAttribute('data-color');
   newTaskElement.style.borderLeft = `6px solid ${boardColor}`;
 
   enableDragEvents(newTaskElement);
@@ -124,9 +213,11 @@ function addNewTask(boardId) {
   updateTasksCount(boardId);
 
   taskInputField.value = '';
+  saveStateToLocalStorage();
 }
+
 // Create a task element with text and timestamp
-function createTaskElement(text) {
+function createTaskElement(text, date) {
   // Create all elements
   const taskContainer = document.createElement('div');
   const taskDetails = document.createElement('div');
@@ -138,7 +229,7 @@ function createTaskElement(text) {
 
   // Set text content
   taskTextElement.textContent = text;
-  taskTimestamp.textContent = getFormattedTime();
+  taskTimestamp.textContent = date || getFormattedTime();
 
   // Append elements
   taskContainer.appendChild(taskDetails);
@@ -173,7 +264,8 @@ function deleteTask(taskElement) {
     const boardElement = taskElement.closest('.task-list');
     const boardId = boardElement.id;
     taskElement.remove();
-    updateTasksCount(boardId);
+    updateTasksCount(boardId); // Added missing function call
+    saveStateToLocalStorage();
   }
 }
 
@@ -188,6 +280,7 @@ function editTask(taskElement) {
     return;
   }
   target.textContent = trimmedText;
+  saveStateToLocalStorage();
 }
 
 // Get the current time in a formatted string
@@ -241,6 +334,7 @@ function enableDropEvents(taskBoard) {
     if (draggedTask) {
       taskBoard.appendChild(draggedTask);
       draggedTask.style.borderLeft = `6px solid ${boardColor}`;
+      saveStateToLocalStorage(); // Added missing function call
     }
   });
 }
@@ -280,17 +374,25 @@ allBoards.forEach(board => {
 
 // Check the task count, and add edit and delete button eventlistuner in already present task when the page loads
 document.addEventListener('DOMContentLoaded', () => {
+  const saveData = localStorage.getItem('kanbanData'); // Correct key name
+  if (saveData) {
+    loadStateFromLocalStorage();
+  } else {
+    saveStateToLocalStorage();
+  }
+
   Array.from(taskBoards).forEach(board => {
-    // update the count of tasks for the board
+    // Update the count of tasks for the board
     let boardId = board.id;
     updateTasksCount(boardId);
-    // add border colour of the task
+    // Add border colour of the task
     const tasks = board.querySelectorAll('.task');
     tasks.forEach(task => {
       const board = task.closest('.board');
       task.style.borderLeftColor = board.getAttribute('data-color');
     });
   });
+
   Array.from(allTask).forEach(task => {
     task
       .querySelector('.edit-icon')
