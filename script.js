@@ -74,7 +74,7 @@ function loadStateFromLocalStorage() {
     updateTasksCount(id);
   });
 
-  // Apply saved Theme
+  // Apply saved theme
   body.classList.toggle('dark-mode', theme === 'dark'); // Fixed typo in `body`
   themeToggle.innerHTML =
     theme === 'dark'
@@ -149,7 +149,7 @@ function addNewBoard(boardHeading, boardColour) {
   saveStateToLocalStorage();
 }
 
-// Create innerHTml of board
+// Create innerHTML of board
 function createBoardHtml(board, boardHeading, boardColour, boardId) {
   board.innerHTML = `
     <div class="board-header">
@@ -297,6 +297,7 @@ function getFormattedTime() {
 
 // Enable drag events for a task element
 function enableDragEvents(target) {
+  target.draggable = true;
   target.addEventListener('dragstart', () => {
     target.classList.add('dragging');
   });
@@ -326,15 +327,21 @@ function enableDropEvents(taskBoard) {
   });
 
   // When the user releases the dragged task
-  taskBoard.addEventListener('drop', () => {
+  taskBoard.addEventListener('drop', event => {
     taskBoard.classList.remove('drag-over');
     const boardSection = taskBoard.closest('.board');
     const boardColor = boardSection.getAttribute('data-color');
     const draggedTask = document.querySelector('.dragging');
     if (draggedTask) {
-      taskBoard.appendChild(draggedTask);
+      const afterElement = getDragAfterElement(taskBoard, event.clientY);
+      if (afterElement === null) {
+        taskBoard.appendChild(draggedTask);
+      } else {
+        taskBoard.insertBefore(draggedTask, afterElement);
+      }
+
       draggedTask.style.borderLeft = `6px solid ${boardColor}`;
-      saveStateToLocalStorage(); // Added missing function call
+      saveStateToLocalStorage();
     }
   });
 }
@@ -343,6 +350,42 @@ function enableDropEvents(taskBoard) {
 function updateTasksCount(boardId) {
   const count = document.querySelectorAll(`#${boardId} .task`).length;
   document.getElementById(`${boardId}-count`).textContent = count;
+}
+
+// Get the element after which the dragged task should be placed
+function getDragAfterElement(board, mouseY) {
+  // Get all task elements inside the board, except the one being dragged
+  let tasks = board.querySelectorAll('.task:not(.dragging)');
+  let closestTask = null; // This will store the nearest task under the mouse (by default null)
+  let closestOffset = Number.NEGATIVE_INFINITY; // This stores closest distance from the mouse to task
+
+  // Loop through each task
+  tasks.forEach(task => {
+    /** Get position and size of the task, this function returns an object containing
+     * box.top -> Distance from the top of the page to Task
+     * box.height -> The height of the task (How tall the task is)
+     * box.bottom, box.left, box.right → Other details about its position.
+     */
+    const taskBox = task.getBoundingClientRect();
+
+    /** Calculates how far the mouse is from the middle of the task.
+     * box.top → The distance from the top of the page to the task.
+     * box.height / 2 → Half of the task's height (this gives us the middle point).
+     * So, box.top + box.height / 2 gives us the exact middle position of the task.
+     */
+    let middleOfTask = taskBox.top + taskBox.height / 2;
+    // And find the distance between the mouse and the middle of the task
+    const offset = mouseY - middleOfTask;
+
+    /* If the value of offset is negative, the mouse is above the task.
+     * If it's positive, the mouse is below the task.*/
+    // offset > closestOffset → The task must be closer than any task found before.
+    if (offset < 0 && offset > closestOffset) {
+      closestOffset = offset;
+      closestTask = task;
+    }
+  });
+  return closestTask;
 }
 
 //////////// Event Listeners
@@ -372,7 +415,7 @@ allBoards.forEach(board => {
   deleteBoardIcon.addEventListener('click', () => deleteBoard(board));
 });
 
-// Check the task count, and add edit and delete button eventlistuner in already present task when the page loads
+// Check the task count, and add edit and delete button event listeners in already present tasks when the page loads
 document.addEventListener('DOMContentLoaded', () => {
   const saveData = localStorage.getItem('kanbanData'); // Correct key name
   if (saveData) {
@@ -385,7 +428,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Update the count of tasks for the board
     let boardId = board.id;
     updateTasksCount(boardId);
-    // Add border colour of the task
+    // Add border color of the task
     const tasks = board.querySelectorAll('.task');
     tasks.forEach(task => {
       const board = task.closest('.board');
